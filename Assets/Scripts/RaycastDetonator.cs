@@ -20,6 +20,6 @@ public class RaycastDetonator : MonoBehaviour
         if(hit.transform.TryGetComponent(out Explosive explosive) == false)
             return;
 
-        explosive.Explode();
+        explosive.Detonate();
     }
 }

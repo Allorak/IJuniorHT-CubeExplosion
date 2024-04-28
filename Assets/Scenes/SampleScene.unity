@@ -255,7 +255,7 @@ Transform:
   m_GameObject: {fileID: 243668138}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 4, z: 19.94}
+  m_LocalPosition: {x: 0, y: 4, z: 10}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -363,7 +363,7 @@ Transform:
   m_GameObject: {fileID: 475183799}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -23.1, y: 4, z: 0}
+  m_LocalPosition: {x: -10, y: 4, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -656,7 +656,7 @@ Transform:
   m_GameObject: {fileID: 1051915356}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 4, z: -24.26}
+  m_LocalPosition: {x: 0, y: 4, z: -10}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -887,7 +887,8 @@ MonoBehaviour:
   _shardsToSpawnMinAmount: 2
   _shardsToSpawnMaxAmount: 6
   _spawnRadius: 1
-  _explosionForce: 2
+  _baseExplosionForce: 5
+  _explosionRadius: 4
 --- !u!1 &1308040173
 GameObject:
   m_ObjectHideFlags: 0
@@ -916,7 +917,7 @@ Transform:
   m_GameObject: {fileID: 1308040173}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 15.62, y: 4, z: 0}
+  m_LocalPosition: {x: 10, y: 4, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 1
   m_Children: []

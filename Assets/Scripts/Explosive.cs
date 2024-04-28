@@ -11,6 +11,7 @@ public class Explosive : MonoBehaviour
 
     private Renderer _renderer;
     private float _divisionChance = 100f;
+    private float _decreasingFactor = 2f;
     
     private void OnValidate()
     {
@@ -53,7 +54,7 @@ public class Explosive : MonoBehaviour
         float greenChannel = Random.Range(minColorChannelValue, maxColorChannelValue);
         float blueChannel = Random.Range(minColorChannelValue, maxColorChannelValue);
         
-        _renderer.material.color = new Color(redChannel, greenChannel, blueChannel, 1f);
+        _renderer.material.color = new Color(redChannel, greenChannel, blueChannel);
     }
 
     private void SpawnShard()
@@ -63,8 +64,10 @@ public class Explosive : MonoBehaviour
         
         Vector3 spawnPosition = transform.position + spawnDirection * _spawnRadius;
         
-        var newShard = Instantiate(this, spawnPosition, Quaternion.identity) ;
-        newShard.Initialize(transform.localScale/2, _divisionChance/2);
+        Explosive newShard = Instantiate(this, spawnPosition, Quaternion.identity) ;
+        Vector3 newScale = transform.localScale / _decreasingFactor;
+        float newDivisionChance = _divisionChance / _decreasingFactor;
+        newShard.Initialize(newScale, newDivisionChance);
         
         newShard.GetComponent<Rigidbody>().AddForce(spawnDirection * _explosionForce, ForceMode.Impulse);
     }

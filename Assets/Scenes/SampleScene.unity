@@ -887,8 +887,8 @@ MonoBehaviour:
   _shardsToSpawnMinAmount: 2
   _shardsToSpawnMaxAmount: 6
   _spawnRadius: 1
-  _baseExplosionForce: 5
-  _explosionRadius: 4
+  _baseExplosionForce: 8
+  _explosionRadius: 5
 --- !u!1 &1308040173
 GameObject:
   m_ObjectHideFlags: 0

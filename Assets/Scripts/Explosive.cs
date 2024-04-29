@@ -2,30 +2,23 @@ using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Spawner))]
 public class Explosive : MonoBehaviour
 {
-    [SerializeField] [Range(1, 10)] private int _shardsToSpawnMinAmount = 2;
-    [SerializeField] [Range(1, 10)] private int _shardsToSpawnMaxAmount = 6;
-    [SerializeField] [Min(1)] private float _spawnRadius = 5;
-    [SerializeField] [Min(1)] private float _baseExplosionForce = 10;
-    [SerializeField] [Min(1)] private float _explosionRadius = 15;
-
+    [field: SerializeField] [Min(1)] public float BaseExplosionForce  { get; private set; } = 10;
+    [field: SerializeField] [Min(1)] public float ExplosionRadius  { get; private set; } = 15;
+    
     private Renderer _renderer;
-    private float _divisionChance = 100f;
-    private float _decreaseFactor = 2f;
+    private Spawner _spawner;
     private Collider[] _explosionColliders = new Collider[150];
-    private float _explosionPowerIncreaseFactor = 1.8f;
-    private float ExplosionDistanceToForceFactor => -_baseExplosionForce / _explosionRadius;
 
-    private void OnValidate()
-    {
-        if (_shardsToSpawnMaxAmount < _shardsToSpawnMinAmount)
-            _shardsToSpawnMaxAmount = _shardsToSpawnMinAmount;
-    }
+    public float DivisionChance { get; private set; } = 100f;
+    private float ExplosionDistanceToForceFactor => -BaseExplosionForce / ExplosionRadius;
 
     private void Awake()
     {
         _renderer = GetComponent<Renderer>();
+        _spawner = GetComponent<Spawner>();
     }
 
     private void Start()
@@ -35,14 +28,25 @@ public class Explosive : MonoBehaviour
 
     public void Detonate()
     {
-        if (Random.Range(0, 100f) > _divisionChance)
+        float minPercentage = 0f;
+        float maxPercentage = 100f;
+    
+        if (Random.Range(minPercentage, maxPercentage) > DivisionChance)
             Explode();
         else 
-            Divide();
+            _spawner.SpawnShards(this);
 
         Destroy(gameObject);
     }
-
+    
+    public void Initialize(Vector3 scale, float divisionChance, float baseExplosionForce, float explosionRadius)
+    {
+        transform.localScale = scale;
+        DivisionChance = divisionChance;
+        BaseExplosionForce = baseExplosionForce;
+        ExplosionRadius = explosionRadius;
+    }
+    
     private void SetRandomColor()
     {
         float minColorChannelValue = 0;
@@ -54,43 +58,10 @@ public class Explosive : MonoBehaviour
         
         _renderer.material.color = new Color(redChannel, greenChannel, blueChannel);
     }
-    
-    private void Divide()
-    {
-        int shardsToSpawnAmount = Random.Range(_shardsToSpawnMinAmount, _shardsToSpawnMaxAmount);
-
-        for (int i = 0; i < shardsToSpawnAmount; i++)
-            SpawnShard();
-    }
-
-    private void SpawnShard()
-    {
-        Vector3 spawnDirection = Random.insideUnitSphere;
-        spawnDirection.y = Random.value;
-        
-        Vector3 spawnPosition = transform.position + spawnDirection * _spawnRadius;
-        
-        Explosive newShard = Instantiate(this, spawnPosition, Quaternion.identity) ;
-        Vector3 newScale = transform.localScale / _decreaseFactor;
-        float newDivisionChance = _divisionChance / _decreaseFactor;
-        float newBaseExplosionForce = _baseExplosionForce * _explosionPowerIncreaseFactor;
-        float newExplosionRadius = _explosionRadius * _explosionPowerIncreaseFactor;
-        newShard.Initialize(newScale, newDivisionChance, newBaseExplosionForce, newExplosionRadius);
-        
-        newShard.GetComponent<Rigidbody>().AddForce(spawnDirection * _baseExplosionForce, ForceMode.Impulse);
-    }
-    
-    private void Initialize(Vector3 scale, float divisionChance, float baseExplosionForce, float explosionRadius)
-    {
-        transform.localScale = scale;
-        _divisionChance = divisionChance;
-        _baseExplosionForce = baseExplosionForce;
-        _explosionRadius = explosionRadius;
-    }
 
     private void Explode()
     {
-        int collisionCount = Physics.OverlapSphereNonAlloc(transform.position, _explosionRadius, _explosionColliders);
+        int collisionCount = Physics.OverlapSphereNonAlloc(transform.position, ExplosionRadius, _explosionColliders);
         
         if(collisionCount == 0)
             return;
@@ -110,10 +81,10 @@ public class Explosive : MonoBehaviour
         
         float distanceToExplosion = Vector3.Distance(colliderRigidbody.position, currentPosition);
 
-        if (distanceToExplosion > _explosionRadius)
+        if (distanceToExplosion > ExplosionRadius)
             return;
 
-        float explosionForce = ExplosionDistanceToForceFactor * distanceToExplosion + _baseExplosionForce;
+        float explosionForce = ExplosionDistanceToForceFactor * distanceToExplosion + BaseExplosionForce;
         Vector3 explosionDirection = (colliderRigidbody.position - currentPosition).normalized;
         colliderRigidbody.AddForce(explosionDirection * explosionForce, ForceMode.Impulse);
     }
